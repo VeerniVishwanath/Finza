@@ -14,6 +14,7 @@ import {
   testimonialsData,
 } from "@/data/landing";
 import Image from "next/image";
+import { v4 as uuid } from "uuid";
 
 export default function Home() {
   return (
@@ -28,7 +29,7 @@ export default function Home() {
       >
         {statsData.map(({ value, label }, key) => {
           return (
-            <div key={`stat-${key}`} className="text-center">
+            <div key={uuid()} className="text-center">
               <p className="font-bold text-4xl text-blue-700 pb-2">{value}</p>
               <p className="text-gray-500">{label}</p>
             </div>
@@ -43,7 +44,7 @@ export default function Home() {
         </h2>
         <div className="grid gap-8 px-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
           {featuresData.map(({ icon, title, description }, key) => (
-            <Card key={`feature-${key}`} className="p-8 ">
+            <Card key={uuid()} className="p-8 ">
               <CardContent className="flex flex-col gap-3">
                 <p className="text-blue-500">{icon}</p>
                 <p className="text-xl font-medium">{title}</p>
@@ -61,7 +62,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 justify-items-center">
           {howItWorksData.map(({ icon, title, description }, key) => (
             <div
-              key={key}
+              key={uuid()}
               className="flex flex-col gap-4 items-center w-full md:w-1/2 lg:w-full"
             >
               <div className="rounded-full bg-blue-100 p-4">{icon}</div>
@@ -79,7 +80,7 @@ export default function Home() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {testimonialsData.map(({ name, role, image, quote }, key) => (
-            <Card key={key} className="p-4 text-gray-600">
+            <Card key={uuid()} className="p-4 text-gray-600">
               <CardHeader className="flex flex-row gap-4 ">
                 <Image
                   src={image}
