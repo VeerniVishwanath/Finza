@@ -71,12 +71,6 @@ body {
   }
 }
 
-/* Removes Clerk Branding on Login */
-.cl-userButtonPopoverCard > div:nth-child(2),
-.cl-footer > div:nth-child(2) {
-  display: none;
-}
-
 /* Hero Page Banner */
 .heroImage-wrapper {
   perspective: 1000px;

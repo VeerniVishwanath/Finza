@@ -30,18 +30,18 @@ export default function HeroSection() {
         <br />
         analyze, and optimize your spending with real-time insights.
       </p>
-      <Button className="w-fit px-8 py-6">
+      <Button className="w-fit px-8 py-6" asChild>
         <Link href={"/dashboard"}>Get Started</Link>
       </Button>
 
       <div className="heroImage-wrapper">
         <div className=" heroImage" ref={imageRef}>
           <Image
-            className="mx-auto rounded-lg"
             src={"/banner.jpeg"}
             width={1280}
             height={760}
             alt="Hero Image"
+            className="mx-auto rounded-lg h-auto w-auto"
           />
         </div>
       </div>

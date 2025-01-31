@@ -14,6 +14,7 @@ import {
   testimonialsData,
 } from "@/data/landing";
 import Image from "next/image";
+import Link from "next/link";
 import { v4 as uuid } from "uuid";
 
 export default function Home() {
@@ -25,7 +26,7 @@ export default function Home() {
       {/* Stats  */}
       <section
         id="stats"
-        className=" flex justify-around items-center w-full bg-blue-50 h-[260px] "
+        className=" grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-20 items-center w-full bg-blue-50 h-auto py-20 "
       >
         {statsData.map(({ value, label }, key) => {
           return (
@@ -117,8 +118,9 @@ export default function Home() {
         <Button
           className="animate-bounce text-blue-600 bg-white w-fit px-8 py-5"
           variant="primary"
+          asChild
         >
-          Start Free Trail
+          <Link href={"/dashboard"}>Start Free Trail</Link>
         </Button>
       </section>
     </div>
