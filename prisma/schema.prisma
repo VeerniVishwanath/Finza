@@ -1,0 +1,96 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+model User {
+    id          String    @id @default(uuid())
+    clerkUserId String    @unique
+    name        String?
+    email       String    @unique
+    imageUrl    String?
+    budget      Budget[]
+    accounts    Account[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@map("users")
+}
+
+model Budget {
+    id            String    @id @default(uuid())
+    amount        Decimal
+    lastAlertSent DateTime?
+    userId        String    @unique
+    user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    @@index([userId])
+    @@map("budgets")
+}
+
+model Account {
+    id           String        @id @default(uuid())
+    isDefault    Boolean       @default(false)
+    name         String
+    type         AccountType
+    balance      Decimal       @default(0)
+    userId       String
+    user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    transactions Transaction[]
+    createdAt    DateTime      @default(now())
+    updatedAt    DateTime      @updatedAt
+
+    @@index([userId])
+    @@map("accounts")
+}
+
+model Transaction {
+    id                String             @id @default(uuid())
+    date              DateTime
+    description       String?
+    category          String
+    amount            Decimal
+    type              TransactionType
+    isRecurring       Boolean            @default(false)
+    recurringInterval RecurringInterval?
+    nextRecurringDate DateTime?
+    lastProcessed     DateTime?
+    status            TransactionStatus  @default(COMPLETED)
+    accountId         String
+    account           Account            @relation(fields: [accountId], references: [id], onDelete: Cascade)
+    createdAt         DateTime           @default(now())
+    updatedAt         DateTime           @updatedAt
+
+    @@index([accountId])
+    @@map("transactions")
+}
+
+enum TransactionType {
+    INCOME
+    EXPENSE
+}
+
+enum AccountType {
+    SAVINGS
+    CURRENT
+}
+
+enum RecurringInterval {
+    DAILY
+    WEEKLY
+    MONTHLY
+    YEARLY
+}
+
+enum TransactionStatus {
+    PENDING
+    COMPLETED
+    FAILED
+}
