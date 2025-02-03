@@ -1,4 +1,8 @@
-import { getAccounts } from "@/actions/dashboard";
+import {
+  getAccounts,
+  getBudget,
+  getBudgetSpent
+} from "@/actions/dashboard";
 import {
   Card,
   CardDescription,
@@ -13,13 +17,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { PencilIcon } from "lucide-react";
 import { v4 as uuid } from "uuid";
 import AccountCard from "./_components/AccountCard";
 import AccountDrawer from "./_components/AccountDrawer";
+import BudgetCard from "./_components/BudgetCard";
 
 async function Home() {
-  const [accounts] = await Promise.all([getAccounts()]);
+  const [accounts, budget, budgetSpent] = await Promise.all([
+    getAccounts(),
+    getBudget(),
+    getBudgetSpent(),
+  ]);
 
   return (
     <div className="container mx-auto py-10 px-4 flex flex-col gap-6">
@@ -29,16 +37,7 @@ async function Home() {
       </h1>
 
       {/* Monthly Budget */}
-      <Card className="">
-        <CardHeader>
-          <CardTitle className="font-medium ">
-            Monthly Budget (Default Account)
-          </CardTitle>
-          <CardDescription className="flex gap-2 items-center">
-            No Budget Set <PencilIcon color="black" size={"1rem"} />
-          </CardDescription>
-        </CardHeader>
-      </Card>
+      <BudgetCard budget={budget.data} budgetSpent={budgetSpent.data} />
 
       <div className="grid gap-5 grid-cols-1 md:grid-cols-2">
         {/* Recent Transactions */}

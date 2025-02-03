@@ -5,6 +5,80 @@ import { revalidatePath } from "next/cache";
 import { getAuth } from "./auth";
 import { serializeTransaction } from "./serializeTransaction";
 
+export async function getBudgetSpent(id) {
+  try {
+    const { userId } = await getAuth();
+
+    let accountId = id;
+
+    if (!accountId) {
+      const defaultAccount = await prisma.account.findFirst({
+        where: { isDefault: true, userId },
+      });
+
+      if (!defaultAccount) return null;
+
+      accountId = defaultAccount.id;
+    }
+    const transactions = await prisma.transaction.aggregate({
+      where: {
+        accountId,
+      },
+      _sum: {
+        amount: true,
+      },
+    });
+
+    const totalAmount = transactions._sum.amount
+      ? transactions._sum.amount.toNumber()
+      : 0;
+
+    return { success: true, data: totalAmount };
+  } catch (error) {
+    throw new Error(`Error while fetching Budget spent: ${error.message}`);
+  }
+}
+
+export async function getBudget() {
+  try {
+    const { userId } = await getAuth();
+
+    const budget = await prisma.budget.findUnique({
+      where: {
+        userId,
+      },
+    });
+    return { success: true, data: budget.amount.toNumber() };
+  } catch (error) {
+    throw new Error(`Error while fetching Budget : ${error.message}`);
+  }
+}
+
+export async function updateBudget(amount) {
+  try {
+    const { userId } = await getAuth();
+
+    const budget = await prisma.budget.upsert({
+      where: {
+        userId,
+      },
+      update: {
+        amount: new Decimal(amount),
+      },
+      create: {
+        amount: new Decimal(amount),
+        userId,
+      },
+    });
+
+    revalidatePath("/dashboard");
+
+    return { success: true, data: serializeTransaction(budget).amount };
+  } catch (error) {
+    throw new Error("Error while updating the Budget ", error.message);
+  }
+}
+
 export async function getAccounts() {
   try {
     const { userId } = await getAuth();
