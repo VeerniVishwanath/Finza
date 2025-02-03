@@ -85,3 +85,9 @@ body {
 .heroImage.scrolled {
   transform: rotateX(0) scale(1) translateY(40px);
 }
+
+/* Deals with the layout shifts caused by RadixUI Select and DropDowns */
+html body[data-scroll-locked] {
+  overflow: visible !important;
+  margin-right: 0 !important;
+}
