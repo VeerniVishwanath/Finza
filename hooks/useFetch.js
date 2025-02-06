@@ -1,28 +1,33 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export const useFetch = (cb) => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+export const useFetch = (cb, queryKeyToInvalidate) => {
+  const queryClient = useQueryClient();
 
-  const fn = async (...args) => {
-    setLoading(true);
-    setError(null);
-    const toastId = toast.loading("processing...");
+  const mutation = useMutation({
+    mutationFn: async (...args) => {
+      await cb(...args);
+    },
 
-    try {
-      const res = await cb(...args);
-      setData(res.data);
-      toast.success("Successful", { id: toastId });
-      setError(null);
-    } catch (error) {
-      toast.error(error.message, { id: toastId });
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
+    onMutate: () => {
+      const toastId = toast.loading("Processing Request");
+      return { toastId };
+    },
+
+    onSuccess: (data, variables, context) => {
+      toast.success("Successful", { id: context?.toastId });
+      queryClient.invalidateQueries(queryKeyToInvalidate);
+    },
+
+    onError: (error, variables, context) => {
+      toast.error(error.message, { id: context?.toastId });
+    },
+  });
+
+  return {
+    data: mutation.data,
+    error: mutation.error,
+    loading: mutation.isPending,
+    fn: mutation.mutate,
   };
-
-  return { data, loading, error, fn };
 };

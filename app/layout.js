@@ -2,8 +2,9 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Ubuntu } from "next/font/google";
-import "./globals.css";
 import { Toaster } from "sonner";
+import "./globals.css";
+import ReactQueryProvider from "./reactQuery/ReactQueryProvider";
 
 const ubuntu = Ubuntu({
   weight: ["300", "400", "500", "700"],
@@ -23,14 +24,20 @@ export default function RootLayout({ children }) {
           <link rel="shortcut icon" href="/favicon.png" type="image/x-icon" />
         </head>
         <body className={`${ubuntu.className} antialiased mt-24 bg-white`}>
-          {/* Header */}
-          <Header />
+          <ReactQueryProvider>
+            {/* Header */}
+            <Header />
 
-          {/* Children  */}
-          {children}
-          <Toaster richColors />
-          {/* Footer */}
-          <Footer />
+            {/* Children  */}
+            {children}
+            <Toaster
+              richColors
+              toastOptions={{ className: "w-auto min-w-60 md:ml-12" }}
+            />
+
+            {/* Footer */}
+            <Footer />
+          </ReactQueryProvider>
         </body>
       </html>
     </ClerkProvider>

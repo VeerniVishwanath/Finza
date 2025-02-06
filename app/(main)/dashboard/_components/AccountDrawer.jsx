@@ -55,11 +55,8 @@ function AccountDrawer() {
     },
   });
 
-  const {
-    data: createAccountData,
-    loading: createAccountLoading,
-    fn: createAccountFn,
-  } = useFetch(createAccount);
+  const { loading: createAccountLoading, fn: createAccountFn } =
+    useFetch(createAccount);
 
   const onSubmit = async (values) => {
     await createAccountFn(values);

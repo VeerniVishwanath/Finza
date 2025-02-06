@@ -10,19 +10,18 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useFetch } from "@/hooks/useFetch";
 import { ArrowDownRightIcon, ArrowUpRightIcon } from "lucide-react";
-import React from "react";
 import { toast } from "sonner";
 import { v4 as uuid } from "uuid";
 
 function AccountCard({ account: { name, type, balance, isDefault, id } }) {
-  const { data, loading, error, fn: updateDefaultFn } = useFetch(updateDefault);
+  const { loading, fn: updateDefaultFn } = useFetch(updateDefault);
 
   const onCheckedChange = (id) => {
     if (isDefault) {
       toast.warning("You need atleast one Account");
       return;
     }
-    updateDefaultFn(id);
+    updateDefaultFn(id, "accounts");
   };
 
   return (
