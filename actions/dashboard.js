@@ -5,6 +5,27 @@ import { revalidatePath } from "next/cache";
 import { getAuth } from "./auth";
 import { serializeTransaction } from "./serializeTransaction";
 
+export async function getTransactions() {
+  try {
+    const { userId } = await getAuth();
+
+    const transactions = await prisma.transaction.findMany({
+      where: {
+        account: {
+          userId,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    return { success: true, data: transactions.map(serializeTransaction) };
+  } catch (error) {
+    throw new Error(`Error while fetching transactions: ${error.message}`);
+  }
+}
+
 export async function getBudgetSpent(id) {
   try {
     const { userId } = await getAuth();
