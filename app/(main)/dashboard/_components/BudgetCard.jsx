@@ -12,30 +12,57 @@ import { Progress } from "@/components/ui/progress";
 import { useFetch } from "@/hooks/useFetch";
 import { CheckIcon, PencilIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { BudgetSkeleton } from "./skeleton";
 
-function BudgetCard({ budget, budgetSpent }) {
+function BudgetCard({ budget, accounts, transactions, state }) {
   const [editBudget, setEditBudget] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState(budget || "");
   const [progress, setProgress] = useState(0);
+  const [budgetSpent, setBudgetSpent] = useState("");
   const { loading, fn: updateBudgetFn } = useFetch(updateBudget);
 
   const handleBudgetUpdate = async () => {
-    await updateBudgetFn(budgetAmount);
+    await updateBudgetFn(budgetAmount, "budget");
     setEditBudget(false);
   };
 
+  // Calculating monthly expenses
   useEffect(() => {
-    setProgress(Math.min((budgetSpent * 100) / budget), 100);
+    if (transactions) {
+      const defaultAcc = accounts?.find((curr) => curr.isDefault)?.id;
+
+      setBudgetSpent(() => {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth());
+
+        return transactions?.reduce((acc, txn) => {
+          if (
+            txn.type === "EXPENSE" &&
+            txn.accountId === defaultAcc &&
+            txn.date > firstDay
+          )
+            return acc + txn.amount;
+          return acc;
+        }, 0);
+      });
+    }
+  }, [transactions, accounts]);
+
+  // Progress bar percentage
+  useEffect(() => {
+    setProgress(Math.min((budgetSpent * 100) / budget, 100));
   }, [budget, budgetSpent]);
 
   return (
-    <Card >
+    <Card>
       <CardHeader>
         <CardTitle className="font-medium ">
           Monthly Budget (Default Account)
         </CardTitle>
         <CardDescription className="flex gap-1 items-center h-8">
-          {editBudget ? (
+          {state.find(Boolean) ? (
+            <BudgetSkeleton />
+          ) : editBudget ? (
             <>
               <Input
                 name="budgetInput"
@@ -66,7 +93,9 @@ function BudgetCard({ budget, budgetSpent }) {
             <div className="flex flex-col w-full">
               <div className="flex gap-2 items-center mb-2">
                 <span>
-                  {`₹ ${budgetSpent} of ₹ ${budget} spent` || "No Budget Set"}
+                  {budgetSpent === 0
+                    ? "No expenses this month"
+                    : `₹ ${budgetSpent} of ₹ ${budget} spent`}
                 </span>
                 <PencilIcon
                   color="black"
@@ -75,7 +104,16 @@ function BudgetCard({ budget, budgetSpent }) {
                   onClick={() => setEditBudget(true)}
                 />
               </div>
-              <Progress value={progress} />
+              <Progress
+                color={` ${
+                  progress < 50
+                    ? "bg-green-500"
+                    : progress < 90
+                    ? "bg-orange-500"
+                    : " bg-red-500 "
+                }`}
+                value={progress}
+              />
             </div>
           )}
         </CardDescription>
