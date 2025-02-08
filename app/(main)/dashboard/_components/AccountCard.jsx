@@ -10,11 +10,13 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { useFetch } from "@/hooks/useFetch";
 import { ArrowDownRightIcon, ArrowUpRightIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { v4 as uuid } from "uuid";
 
 function AccountCard({ account: { name, type, balance, isDefault, id } }) {
   const { loading, fn: updateDefaultFn } = useFetch(updateDefault);
+  const router = useRouter();
 
   const onCheckedChange = (id) => {
     if (isDefault) {
@@ -22,6 +24,10 @@ function AccountCard({ account: { name, type, balance, isDefault, id } }) {
       return;
     }
     updateDefaultFn(id, "accounts");
+  };
+
+  const onCardClick = () => {
+    router.push(`/account/${id}`);
   };
 
   return (
@@ -35,7 +41,7 @@ function AccountCard({ account: { name, type, balance, isDefault, id } }) {
             disabled={loading}
           />
         </CardTitle>
-        <CardDescription>
+        <CardDescription className="hover:cursor-pointer" onClick={onCardClick}>
           <h2 className="text-2xl font-bold text-black">{balance}</h2>
           {type}
         </CardDescription>

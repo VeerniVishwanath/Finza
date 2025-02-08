@@ -1,9 +1,6 @@
 import { getAccounts, getBudget, getTransactions } from "@/actions/dashboard";
 import { getQueryClient } from "@/app/reactQuery/get-query-client";
-import {
-  HydrationBoundary,
-  dehydrate
-} from "@tanstack/react-query";
+import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
 
 export default async function DashBoardLayout({ children }) {
   const queryClient = getQueryClient();
@@ -16,7 +13,7 @@ export default async function DashBoardLayout({ children }) {
   await Promise.all([
     queryClient.prefetchQuery({
       queryKey: ["accounts"],
-      queryFn: getAccounts,
+      queryFn: () => getAccounts(),
       ...defaultQueryOptions,
     }),
     queryClient.prefetchQuery({
@@ -26,7 +23,7 @@ export default async function DashBoardLayout({ children }) {
     }),
     queryClient.prefetchQuery({
       queryKey: ["transactions"],
-      queryFn: getTransactions,
+      queryFn: () => getTransactions(),
       ...defaultQueryOptions,
     }),
   ]);

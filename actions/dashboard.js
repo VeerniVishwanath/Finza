@@ -5,12 +5,13 @@ import { revalidatePath } from "next/cache";
 import { getAuth } from "./auth";
 import { serializeTransaction } from "./serializeTransaction";
 
-export async function getTransactions() {
+export async function getTransactions(accountId) {
   try {
     const { userId } = await getAuth();
 
     const transactions = await prisma.transaction.findMany({
       where: {
+        accountId,
         account: {
           userId,
         },
@@ -100,15 +101,27 @@ export async function updateBudget(amount) {
   }
 }
 
-export async function getAccounts() {
+export async function getAccounts(accountId) {
   try {
     const { userId } = await getAuth();
 
+    const include = accountId ? { transactions: true } : {};
+
     const accounts = await prisma.account.findMany({
       where: {
+        id: accountId,
         userId,
       },
+      include,
     });
+
+    // If fetching a single account, ensure transactions are serialized
+    if (accountId) {
+      accounts[0] = {
+        ...accounts[0],
+        transactions: accounts[0].transactions.map(serializeTransaction),
+      };
+    }
 
     return { success: true, data: accounts.map(serializeTransaction) };
   } catch (error) {

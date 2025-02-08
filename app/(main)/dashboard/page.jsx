@@ -19,14 +19,14 @@ export default function Home() {
       queries: [
         {
           queryKey: ["accounts"],
-          queryFn: getAccounts,
+          queryFn: () => getAccounts(),
           ...defaultQueryOptions,
         },
         { queryKey: ["budget"], queryFn: getBudget, ...defaultQueryOptions },
 
         {
           queryKey: ["transactions"],
-          queryFn: getTransactions,
+          queryFn: () => getTransactions(),
           ...defaultQueryOptions,
         },
       ],
