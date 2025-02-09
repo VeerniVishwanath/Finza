@@ -22,7 +22,7 @@ export default function Page({ params }) {
   const { name, type, balance, transactions } = account.data[0];
 
   return (
-    <div className="px-4 mx-4 space-y-8">
+    <div className="px-4 mx-4 space-y-8 py-8">
       {/* Head Section */}
       <div className="flex justify-between">
         <div>

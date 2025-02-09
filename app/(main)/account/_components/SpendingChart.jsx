@@ -118,7 +118,7 @@ export default function SpendingChart({ transactions }) {
       <CardContent className="h-auto space-y-6">
         <div className="flex justify-around">
           <div className="text-gray-500">
-            Total Incomes
+            Total Income
             <p className="text-green-500">₹ {income}</p>
           </div>
           <div className="text-gray-500">
