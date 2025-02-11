@@ -39,7 +39,7 @@ export default function Transactions({ transactions }) {
   const [searchParams, setSearchParams] = useState("");
   const [txnType, setTxnType] = useState(null);
   const [isRecurring, setIsRecurring] = useState(null);
-  const [sortKey, setSortKey] = useState({});
+  const [sortKey, setSortKey] = useState({ key: "date", order: "desc" });
   const [checked, setChecked] = useState({});
   const [toBeDeletedIds, setToBeDeletedIds] = useState([]);
   const [openAlertDialog, setOpenAlertDialog] = useState(false);

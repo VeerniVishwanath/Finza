@@ -88,7 +88,7 @@ export default function SearchBar({
 
       {/* Delete Button (Visible when transactions are selected) */}
       {showDelete && (
-        <Button variant="destructive" onClick={handleDelete}>
+        <Button variant="destructive" onClick={() => handleDelete()}>
           Delete
         </Button>
       )}

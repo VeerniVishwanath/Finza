@@ -6,7 +6,7 @@ export const useFetch = (cb, queryKeyToInvalidate) => {
 
   const mutation = useMutation({
     mutationFn: async (...args) => {
-      await cb(...args);
+      return await cb(...args);
     },
 
     onMutate: () => {
