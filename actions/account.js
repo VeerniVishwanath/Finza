@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { getAuth } from "./auth";
 import { revalidatePath } from "next/cache";
+import { Decimal } from "@prisma/client/runtime/library";
 
 export async function deleteTransactions(ids) {
   try {
@@ -9,6 +10,45 @@ export async function deleteTransactions(ids) {
       throw new Error("No valid transaction ids provided");
     }
     await getAuth();
+
+    const txns = await prisma.transaction.findMany({
+      where: {
+        id: { in: ids },
+      },
+      select: {
+        amount: true,
+        type: true,
+        accountId: true,
+      },
+    });
+
+    const accountId = txns[0].accountId;
+
+    const account = await prisma.account.findUnique({
+      where: {
+        id: accountId,
+      },
+      select: {
+        balance: true,
+      },
+    });
+
+    const oldBal = account.balance.toNumber();
+
+    const newBal = txns.reduce((acc, txn) => {
+      return txn.type === "INCOME"
+        ? acc - txn.amount.toNumber()
+        : acc + txn.amount.toNumber();
+    }, oldBal);
+
+    await prisma.account.update({
+      where: {
+        id: accountId,
+      },
+      data: {
+        balance: new Decimal(newBal),
+      },
+    });
 
     await prisma.transaction.deleteMany({
       where: {

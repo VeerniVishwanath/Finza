@@ -3,8 +3,10 @@ import { prisma } from "@/lib/prisma";
 import { getAuth } from "./auth";
 import { revalidatePath } from "next/cache";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Decimal } from "@prisma/client/runtime/library";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 export async function createTransaction(data) {
   try {
     await getAuth();
@@ -22,10 +24,32 @@ export async function createTransaction(data) {
 
     const date = new Date(txnDate);
 
+    const account = await prisma.account.findUnique({
+      where: {
+        id: accountId,
+      },
+      select: {
+        balance: true,
+      },
+    });
+
+    const oldBal = account.balance.toNumber();
+
+    const newBal = type === "INCOME" ? oldBal + amount : oldBal - amount;
+
+    await prisma.account.update({
+      where: {
+        id: accountId,
+      },
+      data: {
+        balance: newBal,
+      },
+    });
+
     await prisma.transaction.create({
       data: {
         type,
-        amount,
+        amount: new Decimal(amount),
         category,
         date,
         description,
