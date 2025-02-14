@@ -5,6 +5,8 @@ import AccountDrawer from "./_components/AccountDrawer";
 import BudgetCard from "./_components/BudgetCard";
 import SpendingSummary from "./_components/SpendingSummary";
 
+export const dynamic = "force-dynamic"; // Ensures fresh user-specific data
+
 export default async function Home() {
   const [accounts, budget, transactions] = await Promise.all([
     getAccounts(),
