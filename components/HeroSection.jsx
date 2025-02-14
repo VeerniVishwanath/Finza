@@ -41,7 +41,7 @@ export default function HeroSection() {
             width={1280}
             height={760}
             alt="Hero Image"
-            className="mx-auto rounded-lg h-auto w-auto"
+            className="mx-auto rounded-lg"
           />
         </div>
       </div>
