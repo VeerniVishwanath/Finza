@@ -26,9 +26,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { v4 as uuid } from "uuid";
-import { TxnSkeleton } from "./skeleton";
 
-export default function SpendingSummary({ accounts, transactionsAll, state }) {
+export default function SpendingSummary({ accounts, transactionsAll }) {
   const [accountId, setAccountId] = useState("");
   const [transactions, setTransactions] = useState("");
   const [data, setData] = useState("");
@@ -93,9 +92,7 @@ export default function SpendingSummary({ accounts, transactionsAll, state }) {
           </CardTitle>
           {/* Transactions */}
           <CardDescription className="flex flex-col gap-4 py-4">
-            {!accounts || !transactionsAll ? (
-              <TxnSkeleton />
-            ) : transactions?.length !== 0 ? (
+            {transactions?.length !== 0 ? (
               transactions?.slice(0, 5).map((tnx) => (
                 <div className="flex justify-between items-center" key={uuid()}>
                   <div>
@@ -133,9 +130,7 @@ export default function SpendingSummary({ accounts, transactionsAll, state }) {
             className={cn(data.length > 0 ? "h-[350px]" : "h-auto", "pt-4")}
           >
             {/* Recharts */}
-            {!transactionsAll || !accounts ? (
-              <TxnSkeleton />
-            ) : data.length === 0 ? (
+            {data.length === 0 ? (
               <p className="p-3 text-center">No expenses this month</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">

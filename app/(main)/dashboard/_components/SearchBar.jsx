@@ -33,7 +33,7 @@ export default function SearchBar({
   }, [checked]);
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-wrap lg:flex-nowrap gap-2">
       {/* Search Input */}
       <div className="relative w-full">
         <SearchIcon
@@ -48,6 +48,7 @@ export default function SearchBar({
           onChange={(e) => setSearchParams(e.target.value?.toLowerCase())}
         />
       </div>
+
       {/* Transaction Type Filter */}
       <Select value={txnType || ""} onValueChange={setTxnType}>
         <SelectTrigger className="w-[170px]">
@@ -73,7 +74,6 @@ export default function SearchBar({
       {/* Reset Filters Button (Visible when filters are applied) */}
       {(txnType || isRecurring) && (
         <Button
-          variant="destructive"
           className="hover:cursor-pointer"
           asChild
           onClick={() => {

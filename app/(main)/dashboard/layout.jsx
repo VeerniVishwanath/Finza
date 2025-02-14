@@ -1,38 +1,15 @@
-import { getAccounts, getBudget, getTransactions } from "@/actions/dashboard";
-import { getQueryClient } from "@/app/reactQuery/get-query-client";
-import { HydrationBoundary, dehydrate } from "@tanstack/react-query";
+import LoaderSuspense from "@/app/loaderSuspense";
+import { Suspense } from "react";
 
 export default async function DashBoardLayout({ children }) {
-  const queryClient = getQueryClient();
-
-  const defaultQueryOptions = {
-    staleTime: 1000 * 60 * 5, // Keep the data fresh for 5 minutes
-    cacheTime: 1000 * 60 * 60, // Cache for 1 hour
-  };
-
-  await Promise.all([
-    queryClient.prefetchQuery({
-      queryKey: ["accounts"],
-      queryFn: () => getAccounts(),
-      ...defaultQueryOptions,
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["budget"],
-      queryFn: getBudget,
-      ...defaultQueryOptions,
-    }),
-    queryClient.prefetchQuery({
-      queryKey: ["transactions"],
-      queryFn: () => getTransactions(),
-      ...defaultQueryOptions,
-    }),
-  ]);
-
   return (
-    <main>
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        {children}
-      </HydrationBoundary>
-    </main>
+    <div className="container mx-auto py-10 px-4 flex flex-col gap-6">
+      {/* Heading */}
+      <h1 className=" text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800">
+        Dashboard
+      </h1>
+
+      <Suspense fallback={<LoaderSuspense />}>{children}</Suspense>
+    </div>
   );
 }

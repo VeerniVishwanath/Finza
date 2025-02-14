@@ -12,9 +12,9 @@ import { Progress } from "@/components/ui/progress";
 import { useFetch } from "@/hooks/useFetch";
 import { CheckIcon, PencilIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { BudgetSkeleton } from "./skeleton";
+import { toast } from "sonner";
 
-function BudgetCard({ budget, accounts, transactions, state }) {
+function BudgetCard({ budget, accounts, transactions }) {
   const [editBudget, setEditBudget] = useState(false);
   const [budgetAmount, setBudgetAmount] = useState(budget || "");
   const [progress, setProgress] = useState(0);
@@ -22,6 +22,10 @@ function BudgetCard({ budget, accounts, transactions, state }) {
   const { loading, fn: updateBudgetFn } = useFetch(updateBudget);
 
   const handleBudgetUpdate = async () => {
+    if (budgetAmount < 0) {
+      toast.warning("Budget can't be less than zero");
+      return;
+    }
     await updateBudgetFn(budgetAmount, "budget");
     setEditBudget(false);
   };
@@ -60,9 +64,7 @@ function BudgetCard({ budget, accounts, transactions, state }) {
           Monthly Budget (Default Account)
         </CardTitle>
         <CardDescription className="flex gap-1 items-center h-8">
-          {state.find(Boolean) ? (
-            <BudgetSkeleton />
-          ) : editBudget ? (
+          {editBudget ? (
             <>
               <Input
                 name="budgetInput"
@@ -109,8 +111,8 @@ function BudgetCard({ budget, accounts, transactions, state }) {
                   progress < 50
                     ? "bg-green-500"
                     : progress < 90
-                    ? "bg-orange-500"
-                    : " bg-red-500 "
+                      ? "bg-orange-500"
+                      : " bg-red-500 "
                 }`}
                 value={progress}
               />
