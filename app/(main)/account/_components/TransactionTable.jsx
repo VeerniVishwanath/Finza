@@ -2,37 +2,37 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { categoryColors } from "@/data/categories";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import {
-    ChevronDownIcon,
-    ChevronUpIcon,
-    ClockIcon,
-    EllipsisIcon,
-    RefreshCwIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  ClockIcon,
+  EllipsisIcon,
+  RefreshCwIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { v4 as uuid } from "uuid";
 
 export default function TransactionTable({
@@ -44,6 +44,8 @@ export default function TransactionTable({
   toggleCheckAll,
   handleDelete,
 }) {
+  const router = useRouter();
+
   // Handle column sorting
   const handleSort = (column) => {
     if (sortKey.key === column) {
@@ -193,7 +195,12 @@ export default function TransactionTable({
                   </DropdownMenuTrigger>
                   {/* Content */}
                   <DropdownMenuContent>
-                    <DropdownMenuItem className="hover:cursor-pointer">
+                    <DropdownMenuItem
+                      onClick={() =>
+                        router.push(`/transaction/create?edit=${txn.id}`)
+                      }
+                      className="hover:cursor-pointer"
+                    >
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -209,11 +216,6 @@ export default function TransactionTable({
             </TableRow>
           ))}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            {/* <TableCell className="text-right">$2</TableCell> */}
-          </TableRow>
-        </TableFooter>
       </Table>
     </div>
   );

@@ -1,33 +1,32 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LoaderCircleIcon } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-export const useFetch = (cb, queryKeyToInvalidate) => {
-  const queryClient = useQueryClient();
+export const useFetch = (cb) => {
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
 
-  const mutation = useMutation({
-    mutationFn: async (...args) => {
-      return await cb(...args);
-    },
+  async function fn(...args) {
+    setLoading(true);
+    const toastId = toast.loading(
+      <>
+        <LoaderCircleIcon className="animate-spin mr-2" />
+        <span>Processing request</span>
+      </>
+    );
 
-    onMutate: () => {
-      const toastId = toast.loading("Processing Request");
-      return { toastId };
-    },
+    try {
+      const res = await cb(...args);
+      setData(res);
+      toast.success("Success", { id: toastId });
+    } catch (error) {
+      setError(error);
+      toast.error(error.message, { id: toastId });
+    } finally {
+      setLoading(false);
+    }
+  }
 
-    onSuccess: (data, variables, context) => {
-      toast.success("Successful", { id: context?.toastId });
-      queryClient.invalidateQueries(queryKeyToInvalidate);
-    },
-
-    onError: (error, variables, context) => {
-      toast.error(error.message, { id: context?.toastId });
-    },
-  });
-
-  return {
-    data: mutation.data,
-    error: mutation.error,
-    loading: mutation.isPending,
-    fn: mutation.mutate,
-  };
+  return { data, fn, loading, error };
 };
