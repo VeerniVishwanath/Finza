@@ -7,7 +7,7 @@ export default async function page({ searchParams }) {
 
   const [accounts, transaction] = await Promise.all([
     getAccounts(),
-    edit && getTransaction(edit),
+    edit ? getTransaction(edit) : Promise.resolve(null),
   ]);
 
   return (
