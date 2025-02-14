@@ -167,7 +167,7 @@ export default function Transactions({ transactions }) {
       />
 
       <Pagination>
-        <PaginationContent>
+        <PaginationContent className="flex-wrap">
           {/* Prev */}
           <PaginationItem>
             <PaginationPrevious

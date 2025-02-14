@@ -10,8 +10,11 @@ export async function getAuth() {
   });
 
   if (!user) {
-    throw new Error("User not found");
+    throw new Error("No User Found");
   }
 
-  return { clerkUserId: userId, userId: user.id };
+  return {
+    clerkUserId: userId,
+    userId: user.id,
+  };
 }

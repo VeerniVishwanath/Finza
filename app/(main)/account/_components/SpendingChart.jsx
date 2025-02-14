@@ -115,8 +115,8 @@ export default function SpendingChart({ transactions }) {
           </Select>
         </CardTitle>
       </CardHeader>
-      <CardContent className="h-auto space-y-6">
-        <div className="flex justify-around">
+      <CardContent className="p-2 md:p-6 h-auto space-y-6">
+        <div className="flex justify-around text-center">
           <div className="text-gray-500">
             Total Income
             <p className="text-green-500">₹ {income}</p>
@@ -135,7 +135,11 @@ export default function SpendingChart({ transactions }) {
         </div>
         {/* Rechart */}
         <div className="h-[400px]">
-          <ResponsiveContainer width="100%" height="100%" className="px-10">
+          <ResponsiveContainer
+            width="100%"
+            height="100%"
+            className="p-0 md:px-10"
+          >
             <AreaChart
               width={730}
               height={250}

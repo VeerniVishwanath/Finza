@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "email": "email dev"
   },
   "dependencies": {
     "@arcjet/next": "^1.0.0-beta.2",
@@ -26,6 +27,7 @@
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-toast": "^1.2.5",
     "@radix-ui/react-tooltip": "^1.1.8",
+    "@react-email/components": "0.0.33",
     "@tanstack/react-query": "^5.66.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -40,6 +42,7 @@
     "react-hook-form": "^7.54.2",
     "react-remove-scroll": "^2.6.3",
     "recharts": "^2.15.1",
+    "resend": "^4.1.2",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
@@ -53,6 +56,7 @@
     "@types/react": "19.0.8",
     "postcss": "^8",
     "prisma": "^6.3.0",
+    "react-email": "3.0.7",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"

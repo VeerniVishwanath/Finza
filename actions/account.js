@@ -1,8 +1,8 @@
 "use server";
 import { prisma } from "@/lib/prisma";
-import { getAuth } from "./auth";
-import { revalidatePath } from "next/cache";
 import { Decimal } from "@prisma/client/runtime/library";
+import { revalidatePath } from "next/cache";
+import { getAuth } from "./auth";
 
 export async function deleteTransactions(ids) {
   try {
@@ -60,7 +60,7 @@ export async function deleteTransactions(ids) {
 
     return { success: true };
   } catch (error) {
-    console.error("Error while deleting Transactions:", error); // Log full error
+    console.error("Error while deleting Transactions:", error);
     throw new Error(`Error while deleting Transactions: ${error.message}`);
   }
 }

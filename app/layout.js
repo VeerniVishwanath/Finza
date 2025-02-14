@@ -2,8 +2,10 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Ubuntu } from "next/font/google";
+import { Suspense } from "react";
 import { Toaster } from "sonner";
 import "./globals.css";
+import LoaderSuspense from "./loaderSuspense";
 import ReactQueryProvider from "./reactQuery/ReactQueryProvider";
 
 const ubuntu = Ubuntu({
@@ -29,7 +31,7 @@ export default function RootLayout({ children }) {
             <Header />
 
             {/* Children  */}
-            {children}
+            <Suspense fallback={<LoaderSuspense />}>{children}</Suspense>
             <Toaster
               richColors
               toastOptions={{ className: "w-auto min-w-60 md:ml-12" }}
