@@ -1,9 +1,11 @@
+"use client";
 import LoaderSuspense from "@/app/loaderSuspense";
+import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 
-export const dynamic = "force-dynamic";
+export default function DashBoardLayout({ children }) {
+  const path = usePathname();
 
-export default async function DashBoardLayout({ children }) {
   return (
     <div className="container mx-auto py-10 px-4 flex flex-col gap-6">
       {/* Heading */}
@@ -11,7 +13,9 @@ export default async function DashBoardLayout({ children }) {
         Dashboard
       </h1>
 
-      <Suspense fallback={<LoaderSuspense />}>{children}</Suspense>
+      <Suspense key={`${path}-${Date.now()}`} fallback={<LoaderSuspense />}>
+        {children}
+      </Suspense>
     </div>
   );
 }
