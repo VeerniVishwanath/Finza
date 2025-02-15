@@ -1,6 +1,8 @@
 import LoaderSuspense from "@/app/loaderSuspense";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AccountLayout({ children }) {
   return (
     <div className="container mx-auto">
