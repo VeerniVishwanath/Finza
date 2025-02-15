@@ -2,6 +2,8 @@ import { getAccounts } from "@/actions/dashboard";
 import { getTransaction } from "@/actions/transaction";
 import TransactionForm from "./_components/TransactionForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function page({ searchParams }) {
   const { edit } = await searchParams;
 
