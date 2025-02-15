@@ -2,7 +2,7 @@ import { getAccounts } from "@/actions/dashboard";
 import SpendingChart from "../_components/SpendingChart";
 import Transactions from "../_components/Transactions";
 
-export default async function Page({ params }) {
+export default async function AccountPage({ params }) {
   const { accountId } = await params;
 
   const account = await getAccounts(accountId);

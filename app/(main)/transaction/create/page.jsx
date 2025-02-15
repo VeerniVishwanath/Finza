@@ -4,8 +4,8 @@ import TransactionForm from "./_components/TransactionForm";
 
 export const dynamic = "force-dynamic";
 
-export default async function page({ searchParams }) {
-  const { edit } = await searchParams;
+export default async function TransactionPage({ searchParams }) {
+  const { edit } = (await searchParams) || {};
 
   const [accounts, transaction] = await Promise.all([
     getAccounts(),

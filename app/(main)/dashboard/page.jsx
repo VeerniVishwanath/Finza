@@ -7,7 +7,7 @@ import SpendingSummary from "./_components/SpendingSummary";
 
 export const dynamic = "force-dynamic"; // Ensures fresh user-specific data
 
-export default async function Home() {
+export default async function DashBoardPage() {
   const [accounts, budget, transactions] = await Promise.all([
     getAccounts(),
     getBudget(),
