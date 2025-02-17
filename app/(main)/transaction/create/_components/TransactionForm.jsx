@@ -3,7 +3,7 @@
 // External Libraries
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -45,14 +45,23 @@ import { transactionSchema } from "@/lib/schema";
 import { cn } from "@/lib/utils";
 
 // Data & API Calls
-import { createTransaction, scanReceipt } from "@/actions/transaction";
+import {
+  createTransaction,
+  editTransaction,
+  scanReceipt,
+} from "@/actions/transaction";
 import { defaultCategories } from "@/data/categories";
 
 // Components
 import ScanReceipt from "./ScanReceipt";
 
-export default function TransactionForm({ accounts, initialData }) {
+export default function TransactionForm({
+  accounts,
+  initialData,
+  editMode = false,
+}) {
   const router = useRouter();
+  const editId = useSearchParams().get("edit");
 
   /** Find Default Account */
   const defaultAcc = accounts?.find((acc) => acc.isDefault);
@@ -60,29 +69,30 @@ export default function TransactionForm({ accounts, initialData }) {
   /** Form Handling */
   const form = useForm({
     resolver: zodResolver(transactionSchema),
-    defaultValues: initialData
-      ? {
-          type: initialData?.type,
-          amount: initialData?.amount.toString(),
-          description: initialData?.description,
-          accountId: initialData?.accountId,
-          category: initialData?.category,
-          date: new Date(initialData?.date),
-          isRecurring: initialData?.isRecurring,
-          ...(initialData?.recurringInterval && {
-            recurringInterval: initialData?.recurringInterval,
-          }),
-        }
-      : {
-          date: new Date(),
-          description: "",
-          category: "",
-          amount: "",
-          type: "INCOME",
-          isRecurring: false,
-          recurringInterval: undefined,
-          accountId: defaultAcc?.id || "",
-        },
+    defaultValues:
+      editMode && initialData
+        ? {
+            type: initialData?.type,
+            amount: initialData?.amount.toString(),
+            description: initialData?.description,
+            accountId: initialData?.accountId,
+            category: initialData?.category,
+            date: new Date(initialData?.date),
+            isRecurring: initialData?.isRecurring,
+            ...(initialData?.recurringInterval && {
+              recurringInterval: initialData?.recurringInterval,
+            }),
+          }
+        : {
+            date: new Date(),
+            description: "",
+            category: "",
+            amount: "",
+            type: "INCOME",
+            isRecurring: false,
+            recurringInterval: undefined,
+            accountId: defaultAcc?.id || "",
+          },
   });
 
   /** Form State */
@@ -91,11 +101,18 @@ export default function TransactionForm({ accounts, initialData }) {
   const { setValue } = form;
 
   /** Fetch Hook for Transaction */
-  const { loading, fn: createTransactionFn } = useFetch(createTransaction);
+  const { loading, fn: createTransactionFn } = useFetch(
+    editMode ? editTransaction : createTransaction
+  );
 
   /** Form Submit Handler */
   const onSubmit = async (values) => {
-    await createTransactionFn(values);
+    if (editMode) {
+      await createTransactionFn(editId, values);
+    } else {
+      await createTransactionFn(values);
+    }
+
     form.reset();
     if (defaultAcc.id) {
       await router.push(`/account/${defaultAcc.id}`);
@@ -134,11 +151,11 @@ export default function TransactionForm({ accounts, initialData }) {
   return (
     <div className="max-w-3xl mx-auto space-y-4 mb-32 p-4 ">
       <h1 className="font-bold text-5xl lg:text-6xl text-center mb-10">
-        {initialData ? "Edit Transaction" : "Add Transaction"}
+        {editMode ? "Edit Transaction" : "Add Transaction"}
       </h1>
 
       {/* Scan Receipt Button */}
-      {!initialData && (
+      {!editMode && (
         <ScanReceipt
           scanReceiptLoading={scanReceiptLoading}
           handleScanReceipt={handleScanReceipt}
@@ -369,7 +386,7 @@ export default function TransactionForm({ accounts, initialData }) {
             <Button className="w-1/2" type="submit" disabled={loading}>
               {loading
                 ? "Processing..."
-                : initialData
+                : editMode
                   ? "Update Transaction"
                   : "Create Transaction"}
             </Button>

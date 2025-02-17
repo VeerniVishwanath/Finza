@@ -1,13 +1,10 @@
 import LoaderSuspense from "@/app/loaderSuspense";
 import { Suspense } from "react";
-import TransactionPage from "./page";
 
-export default function TransactionLayout({ searchParams }) {
+export default function TransactionLayout({ children }) {
   return (
     <main className="container mx-auto py-4">
-      <Suspense fallback={<LoaderSuspense />}>
-        <TransactionPage searchParams={searchParams} />
-      </Suspense>
+      <Suspense fallback={<LoaderSuspense />}>{children}</Suspense>
     </main>
   );
 }

@@ -137,10 +137,7 @@ export async function editTransaction(id, data) {
           ? originalTxn.amount.toNumber()
           : -originalTxn.amount.toNumber();
 
-      const newBalChange =
-        data.type === "INCOME"
-          ? data.amount.toNumber()
-          : -data.amount.toNumber();
+      const newBalChange = data.type === "INCOME" ? data.amount : -data.amount;
 
       const netBalChange = newBalChange - oldBalChange;
 
